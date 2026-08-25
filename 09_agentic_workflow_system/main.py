@@ -1,13 +1,14 @@
-from dotenv import load_dotenv
+from dotenv import load_dotenv, find_dotenv
 from state_machine import ClaimRecord
 from workflow import InsuranceClaimWorkflowEngine
 
-load_dotenv()
+# Cargar automáticamente el .env de la raíz
+load_dotenv(find_dotenv())
 
 if __name__ == "__main__":
     engine = InsuranceClaimWorkflowEngine()
 
-    # Caso de prueba: Reclamo CLM-4821 (Riesgo que activa HITL)
+    # Caso de prueba: Reclamo CLM-4821
     claim = ClaimRecord(
         claim_id="CLM-4821",
         policy_id="POL-992317",

@@ -1,9 +1,10 @@
 import os
 import pandas as pd
-from dotenv import load_dotenv
+from dotenv import load_dotenv, find_dotenv
 from agent import ToolUsingAgent
 
-load_dotenv()
+# Carga automática del .env desde la raíz del proyecto
+load_dotenv(find_dotenv())
 
 if __name__ == "__main__":
     csv_file = "campaign_data.csv"

@@ -1,14 +1,15 @@
 import os
 import json
+from typing import Optional
 from google import genai
 from google.genai import types
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from state_machine import ClaimRecord, ClaimState
 
 class RiskAssessmentSchema(BaseModel):
-    risk_level: str
-    confidence_score: float
-    justification: str
+    risk_level: str = Field(description="Evaluación del nivel de riesgo: 'low', 'medium' o 'high'")
+    confidence_score: float = Field(description="Puntuación de confianza entre 0.0 y 1.0")
+    justification: str = Field(description="Explicación detallada de la evaluación")
 
 class InsuranceClaimWorkflowEngine:
     def __init__(self):
@@ -31,10 +32,10 @@ class InsuranceClaimWorkflowEngine:
     def run_risk_assessment(self, claim: ClaimRecord):
         claim.log("Executing LLM Agent risk assessment.")
         prompt = f"""
-Evaluate the insurance claim risk:
+Evaluate the insurance claim risk and return the assessment:
 Claim ID: {claim.claim_id}
 Type: {claim.claim_type}
-Amount: ${claim.amount}
+Amount: ${claim.amount:.2f}
 Policy: {claim.policy_id}
 """
         response = self.client.models.generate_content(
@@ -51,7 +52,7 @@ Policy: {claim.policy_id}
         claim.confidence_score = assessment.confidence_score
         claim.log(f"Risk: {claim.risk_level}, Confidence: {claim.confidence_score:.2f}. Reason: {assessment.justification}")
 
-        # Guard Conditions
+        # Guard Conditions (Reglas de transición del estado)
         if claim.confidence_score >= 0.85 and claim.risk_level == "low":
             claim.state = ClaimState.PROCESSING_PAYOUT
         else:
@@ -62,7 +63,7 @@ Policy: {claim.policy_id}
         decision = auto_decision
         if not decision:
             print(f"\n[!] HITL ESCALATION: Claim {claim.claim_id} requires human approval.")
-            print(f"Amount: ${claim.amount} | Risk Level: {claim.risk_level} | Conf: {claim.confidence_score:.2f}")
+            print(f"Amount: ${claim.amount:.2f} | Risk Level: {claim.risk_level} | Conf: {claim.confidence_score:.2f}")
             while decision not in ["approve", "reject"]:
                 decision = input("Enter decision ('approve' / 'reject'): ").strip().lower()
 
