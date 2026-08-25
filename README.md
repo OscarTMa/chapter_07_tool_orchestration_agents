@@ -21,7 +21,7 @@ flowchart TD
         O1 --> O3[Specialist: FinancialAgent]
         O1 --> O4[Specialist: SentimentAgent]
         O2 & O3 & O4 --> O5[(Working & Episodic Memory)]
-        O5 --> O6{Conflict Detector: |Sentiment - Move| > Threshold}
+        O5 --> O6{"Conflict Detector: abs(Sentiment - Move) > Threshold"}
         O6 -->|Divergence Found| O7[LLM Arbiter Reconciliation]
         O6 -->|Aligned| O8[Direct Consensus Report]
     end
