@@ -8,63 +8,68 @@ This module implements the third triad of AI agents described in *30 Agents Ever
 
 ```mermaid
 flowchart TD
-    %% ==========================
-    %% AGENT 07: TOOL-USING PATTERN
-    %% ==========================
-    subgraph S1["Agent 07: Tool-Using Pattern"]
-        direction TB
-        T1["User Request"] --> T2["Reasoning Core: Think & Plan"]
-        T2 --> T3[("Tool Registry & Contracts")]
-        T3 --> T4["Execution Engine: Act"]
-        T4 --> T5["Tool Chest: CSV / Agg / Matplotlib"]
-        T5 --> T6["Final Output / Rendered Asset"]
-    end
+    %% ==========================================
+    %% 1. AGENT 07: THE TOOL-USING AGENT
+    %% ==========================================
+    T1["1. User Request / Goal"]
+    T2["Reasoning Core: Think & Plan"]
+    T3[("Tool Registry & Schema Contracts")]
+    T4["Execution Engine: Act"]
+    T5["Guarded Tool Chest (CSV / Agg / Plot)"]
+    T6["Rendered Asset Output"]
 
-    %% ==========================
-    %% AGENT 08: CHAIN-OF-AGENTS ORCHESTRATOR
-    %% ==========================
-    subgraph S2["Agent 08: Chain-of-Agents Orchestrator"]
-        direction TB
-        O1["Lead Orchestrator Manager"]
-        
-        O1 --> O2["Specialist: NewsAgent"]
-        O1 --> O3["Specialist: FinancialAgent"]
-        O1 --> O4["Specialist: SentimentAgent"]
-        
-        O2 --> O5[("Working & Episodic Memory")]
-        O3 --> O5
-        O4 --> O5
-        
-        O5 --> O6{"Conflict Detector:<br>abs(Sentiment - Move) > Threshold"}
-        
-        O6 -->|Divergence Found| O7["LLM Arbiter Reconciliation"]
-        O6 -->|Aligned| O8["Direct Consensus Report"]
-        
-        O7 --> O9["Final Synthesized Report"]
-        O8 --> O9
-    end
+    T1 --> T2
+    T2 --> T3
+    T3 --> T4
+    T4 --> T5
+    T5 --> T6
 
-    %% ==========================
-    %% AGENT 09: AGENTIC WORKFLOW SYSTEM
-    %% ==========================
-    subgraph S3["Agent 09: Agentic Workflow System"]
-        direction TB
-        W1["Intake State"] --> W2["Validation Guard"]
-        
-        W2 -->|Valid| W3["Risk Assessment (LLM Node)"]
-        W2 -->|Invalid| W7["Closed: Rejected"]
-        
-        W3 -->|High Conf & Low Risk| W5["Processing Payout"]
-        W3 -->|Low Conf or High Risk| W4{"HITL Review Gate"}
-        
-        W4 -->|Approved| W5
-        W4 -->|Rejected| W7
-        
-        W5 --> W6["Closed: Approved"]
-    end
+    %% Conexión vertical hacia el Agente 08
+    T6 --> O1
 
-    %% Flujo vertical entre las tres secciones
-    S1 --> S2 --> S3
+    %% ==========================================
+    %% 2. AGENT 08: CHAIN-OF-AGENTS ORCHESTRATOR
+    %% ==========================================
+    O1["2. Lead Orchestrator Manager"]
+    O2["Specialist Agents (News, Finance, Sentiment)"]
+    O3[("Layered Memory (Working & Episodic)")]
+    O4{"Conflict Detector<br>abs(Sentiment - Move) > 0.5"}
+    O5["LLM Arbiter Reconciliation"]
+    O6["Direct Consensus Alignment"]
+    O7["Synthesized Market Report"]
+
+    O1 --> O2
+    O2 --> O3
+    O3 --> O4
+    O4 -->|Divergence| O5
+    O4 -->|Aligned| O6
+    O5 --> O7
+    O6 --> O7
+
+    %% Conexión vertical hacia el Agente 09
+    O7 --> W1
+
+    %% ==========================================
+    %% 3. AGENT 09: THE AGENTIC WORKFLOW SYSTEM
+    %% ==========================================
+    W1["3. Intake State"]
+    W2{"Validation Guard"}
+    W3["Risk Assessment (LLM Node)"]
+    W4{"Risk & Confidence Evaluation"}
+    W5{"HITL Review Gate (Human in the Loop)"}
+    W6["Processing Payout"]
+    W7["Closed: Approved"]
+    W8["Closed: Rejected"]
+
+    W1 --> W2
+    W2 -->|Valid| W3
+    W2 -->|Invalid| W8
+    W3 --> W4
+    W4 -->|Confidence >= 0.85 & Low Risk| W6
+    W4 -->|Confidence < 0.85 or High Risk| W5
+    W5 -->|Approved| W6
+    W5 -->|Rejected| W8
+    W6 --> W7
 ```
 
 ---
